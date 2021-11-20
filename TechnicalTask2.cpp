@@ -3,6 +3,19 @@
 
 using namespace std;
 
+bool checkMatrix(vector<vector<int>>& matrix) {
+	for (int i = 0; i < matrix.size(); ++i)
+	{
+		for (int j = 0; j < matrix.size(); ++j)
+
+			if (matrix[i][j] > 1 || matrix[i][j] < 0) {
+
+				return false;
+			};
+
+	}
+}
+
 bool getElementMatrix()
 {
 	while (true)
@@ -16,7 +29,9 @@ bool getElementMatrix()
 		if (std::cin.fail())
 		{
 			std::cin.clear();
+
 			std::cin.ignore(32767, '\n');
+
 			std::cout << "Oops, that input is invalid.  Please try again.\n";
 		}
 		else
@@ -36,29 +51,25 @@ int getSizeMatrix()
 		int a;
 		std::cin >> a;
 
-		if (std::cin.fail())
+		if (std::cin.fail() || a > 50 || a < 2)
 		{
 			std::cin.clear();
+
 			std::cin.ignore(32767, '\n');
+
 			std::cout << "Oops, that input is invalid.  Please try again.\n";
 		}
 		else
 		{
-			if (a > 50 || a < 2)
-			{
-				cout << "Vvedite korrektnyi razmer";
-			}
-			else {
-				std::cin.ignore(32767, '\n');
+			std::cin.ignore(32767, '\n');
 
-				return a;
-			}
+			return a;
+
 		}
 	}
 }
 
-
-vector<vector<int>> getValidSib(vector<int>& start, vector<vector<int>>& matrix) {
+vector<vector<int>> getPossibleWays(vector<int>& start, vector<vector<int>>& matrix) {
 
 	vector<vector<int> > possibleWays;
 
@@ -102,12 +113,11 @@ vector<vector<int>> getValidSib(vector<int>& start, vector<vector<int>>& matrix)
 	return possibleWays;
 }
 
-
 bool checkPath(vector<int>& start, vector<vector<int>>& matrix) {
 
 	int size = matrix.size() - 1;
 
-	if (matrix[0][0] == 0 || matrix[size][size] == 0)
+	if (matrix[0][0] == 0 || matrix[size][size] == 0 || matrix[0].size() - 1 != size)
 	{
 		return false;
 	}
@@ -120,7 +130,7 @@ bool checkPath(vector<int>& start, vector<vector<int>>& matrix) {
 
 	matrix[start[0]][start[1]] = 2;
 
-	possibleWays = getValidSib(start, matrix);
+	possibleWays = getPossibleWays(start, matrix);
 
 
 	if (possibleWays.size() > 0)
@@ -133,6 +143,7 @@ bool checkPath(vector<int>& start, vector<vector<int>>& matrix) {
 
 			bool notVisited = matrix[current[0]][current[1]] != 2;
 
+
 			if (isSolved || notVisited && checkPath(current, matrix))
 			{
 				return true;
@@ -143,10 +154,16 @@ bool checkPath(vector<int>& start, vector<vector<int>>& matrix) {
 }
 
 bool func(vector<vector<int>>& matrix) {
-	vector < int > start{ 0,0 };
-	return checkPath(start, matrix);
-}
 
+	vector < int > start{ 0,0 };
+
+	if (checkMatrix(matrix))
+	{
+		return checkPath(start, matrix);
+	}
+	return false;
+
+}
 
 int main(int argc, char* argv[])
 {
@@ -167,4 +184,5 @@ int main(int argc, char* argv[])
 
 	cout << func(matrix);
 
+	return 0;
 }
